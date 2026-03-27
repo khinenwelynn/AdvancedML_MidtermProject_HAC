@@ -1,1 +1,51 @@
+import numpy as np
+import pandas as pd
 
+dt= pd.read_csv('datasets/Credit Card Customer Data.csv')
+dt
+
+dt=dt.drop('Sl_No',axis=1)
+
+from sklearn.preprocessing import StandardScaler
+
+scaler= StandardScaler()
+scaled_data= scaler.fit_transform(dt)
+
+scaled_dt= pd.DataFrame(scaled_data, columns=dt.columns)
+
+
+import scipy.cluster.hierarchy as sch
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 6))
+dendrogram = sch.dendrogram(sch.linkage(scaled_dt, method='ward'))
+plt.title("Dendrogram")
+plt.xlabel("Customers")
+plt.ylabel("Distance")
+plt.show()
+
+from sklearn.cluster import AgglomerativeClustering
+
+model = AgglomerativeClustering(n_clusters=3, linkage='ward')
+clusters = model.fit_predict(scaled_dt)
+
+dt['Cluster'] = clusters
+
+from sklearn.metrics import silhouette_score
+
+for k in range(2, 7):
+    model = AgglomerativeClustering(n_clusters=k, linkage='ward')
+    labels = model.fit_predict(scaled_dt)
+    score = silhouette_score(scaled_dt, labels)
+    print(f"k={k}, Silhouette Score={score}")
+
+plt.figure(figsize=(12,6))
+sch.dendrogram(
+    sch.linkage(scaled_dt, method='ward'),
+    truncate_mode='lastp',
+    p=30
+)
+plt.show()
+
+cluster_summary = dt.groupby('Cluster').mean()
+print(cluster_summary)
