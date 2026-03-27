@@ -2,6 +2,6 @@
 
 Hand On coding for HAC algorithm.
 
-Coding File Contributors 
-Khine Nwe Lin
-Ei Phyu Sin Win
+Coding File Contributors : <div>
+1. Khine Nwe Lin <div>
+Ei Phyu Sin Win <div>
